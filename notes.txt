@@ -134,3 +134,30 @@ self._prefixed_with_single_underscore_is_protected_var
 
 
 6. How to make programs robust
+* make it production ready, testing debugging and optimizations
+ Use virtualenv
+ python is a dynamic language. So use tests - 'from unittest import TestCase, main'
+ types of tests -
+   1. unittest - refer test_util.py in this folder - it is testing a function in isolation
+   2. integration test - it is testing interactions between functions
+
+  Interactive debugging
+  > print works ...
+  > unittests also aids a lot
+  > reading stack trace is not bad at all
+  >  now .. go in the code and use 'import pdb; pdb.set_trace()' just before the code under suspicion
+    (Pdb) i # inspect
+    (Pdb) bt # backtrace
+    (Pdb) up
+    (Pdb) down
+    (Pdb) continue # until the next trace command getting called
+    (Pdb) step
+    (Pdb) return
+    (Pdb) next # doesn't enter the inner function
+    (Pdb) quit
+   > use try, and write 'import pdb; pdb.set_trace()' in except
+
+ * Profiling before optimizing
+   Use 'from cProfile import Profile' followed by 'from pstats import Stats'
+     observe insert_value_bad and insert_value_good results on the command line stats
+  * Use tracemalloc for detecting memoryleaks   'import gc; import waste_memory'  
