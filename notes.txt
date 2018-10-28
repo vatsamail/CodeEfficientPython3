@@ -1,0 +1,136 @@
+"""
+Reference:
+ EffectivePython by Brett Slatkin
+ https://effectivepython.com/
+ safaribooksonline.com
+"""
+
+1: using expressions and statements
+- slicing
+* somelist[start_inclusive:end_exclusive]
+* works on list, tuples, str, bytes
+* works on class that defines __getitem__
+* print(id(a)) is the address of the memory!
+* a[2:7] = ['1', '2', '3', '4'] works
+* somelist[start_inclusive:end_exclusive:optional_stride_interval]
+* use enumerate over range - for i, val in enumerate(values, 1):
+* use zip operator to create a pair of two equally length lists
+   to solve that issue, use zip_longest from itertools
+
+* avoid usage of else after for, while
+* try, except, else, finally block
+    try:
+      # do something
+    except Myexception as e:
+      # handle exception
+    else:
+      # runs when there are know exceptions
+    finally:
+      # always runs after trying
+* CONTEXTLIB with code,
+  from contextlib import contextmanager
+
+  @contextmanager
+  def debug_logging(level):
+
+
+2: Comprehensions and generators
+* list comprehension is better and map & filter syntax
+a = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+sq = [x**2 for x in a if x%2 == 2]
+
+x = {'a': 1, 'b': 2, 'c': 3}
+y = {num: alpha for alpha, num in x.items()}
+
+matrix = [[1,2,3], [4,5,6,], [7,8,9]]
+flat = [x for row in matrix for x in row]
+sq = [[x**2 for x in row] for row in matrix]
+so, avoid more than 2 list comprehensions
+
+generators - the lazy way of running list comprehension is generators. Very useful for longer lists, like reading the file
+with open('/tmp/somf.txt', 'w') as f:
+  for _ range(10):
+    f.write('a' * random.randomint(1, 100))
+    f.write('\n')
+
+print([len(x) for x in open('/tmp/somf.txt', 'r')]) # list comprehension
+it = (len(x) for x in open('/tmp/somf.txt', 'r'))
+print(next(it))
+print(next(it))
+print(next(it))
+
+* consider generators instead of returning lists
+
+def index_words(text):
+  if text:
+    yield 0
+  for index, letter in enumerate(text):
+    if letter == ' ':
+      yield index +1
+
+some_text = "hello how are you? how is life? let meet sometime!"
+it = index_words(some_text)
+print(next(it))
+print(next(it))
+print(next(it))
+
+* be defensive when iterating over arguments
+
+
+3: Using functions
+priority = {2, 3, 4}
+numbers = [6,5,3,2,8,4]
+
+def helper(x):
+  if x in priority:
+    return (0, x)
+  return (1, x) # tuple comparison as 0 is less than 1
+
+numbers.sort(key=helper)
+print(numbers)
+
+* nonlocal is the keyword to change the scope
+
+
+Accept functions for simple interfaces instead of classes
+- python had first class function (can be passed over as values)
+- use __call__ to make a class object callable as a function. And the way to check if the object is callable is to use callable(object) built-in method
+
+Reducing visual noise in the positional arguments
+def log(value, *optional)
+Keyword only arguments (over positional arguments)
+ def check(mandate, default_value=1)
+
+enforce clarity with keyword only arguments
+def nice(arg1, arg2, *, all_are_after_the_star_are_key_word_only_args=False)
+nice(1, 2, all_are_after_the_star_are_key_word_only_args=True)
+
+NONE and docstrings usage by convention
+def log_better(msg, when=None):
+    if when is None:
+        when = datetime.now()
+
+
+4: Using classes
+* use helper class instead of bookkeeping with dictionaries and tuples
+  use namedtuple from collections package
+  helper classes are multiple classes
+* use attributes instead of getter and setter methods (through property)
+- use attribute modifications in only setter method to avoid confusions
+* use public over private attribs
+self.__prefixed_with_double_underscore_is_private_var
+self._prefixed_with_single_underscore_is_protected_var
+* polymorphism - different methods for all sub classes
+ - check the attached mapr_impl.py to learn simple polymorphism (not @classmethod based)
+
+5: Concurrency and parallelism
+* using subprocesses and child processes
+* the threads in python doesn't improve the computation. but it is good for creating parallel I/O threads
+* when there are concurrent things are happening (using threads), please use lock methods to ensure we keep the data integrity - threading.Lock()
+* use queues to coordinate between locks
+* consider using 'from concurrent.futures import ProcessPoolExecutor' for true parallel jobs
+ important note again - python is never parallel it is only concurrent
+   - only use when the functions are isolated, high leverage(like simulation: small input data and large computation, )
+
+
+6. How to make programs robust
