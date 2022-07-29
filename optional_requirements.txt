@@ -65,7 +65,7 @@ mach==0.6
 Markdown==2.6.11
 MarkupSafe==1.0
 menuinst==1.4.14
-mistune==0.8.3
+mistune==2.0.3
 mozfile==2.0.0
 mozinfo==1.0.0
 mozprocess==0.26
